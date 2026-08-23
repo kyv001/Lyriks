@@ -1,0 +1,14 @@
+{
+  "KPlugin": {
+    "Authors": [
+      { "Email": "kyvyang@foxmail.com", "Name": "KyvYang" }
+    ],
+    "Category": "Multimedia",
+    "Icon": "applications-multimedia",
+    "Id": "top.lyriks.lyriks",
+    "Name": "Lyriks",
+    "Version": "1.0"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0",
+  "KPackageStructure": "Plasma/Applet"
+}
