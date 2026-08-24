@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+kpackagetool6 --type Plasma/Applet --upgrade ./package
+systemctl --user restart plasma-plasmashell.service
