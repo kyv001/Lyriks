@@ -22,6 +22,29 @@ PlasmoidItem {
     property bool playing: false
 
     // UI
+    preferredRepresentation: {
+        if (location === 3) {
+            return compactRepresentation
+        }
+        return fillRepresentation
+    }
+
+    // 面板组件——紧凑模式
+    compactRepresentation: Label {
+        id: lyricsLabelCompact
+        text: (lyriks.selectedPlayer === "") ? "Lyrics will appear here" : lyriks.lyricLine
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        Layout.alignment: Qt.AlignTop
+        font.pixelSize: 0.75 * Kirigami.Units.gridUnit
+        Layout.preferredWidth: 8 * Kirigami.Units.gridUnit
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        wrapMode: Label.WrapAtWordBoundaryOrAnywhere
+        elide: Text.ElideRight
+    }
+
+    // 桌面组件——完整模式
     fullRepresentation: ColumnLayout {
         Layout.minimumWidth: 10 * Kirigami.Units.gridUnit
         Layout.minimumHeight: 5 * Kirigami.Units.gridUnit
@@ -53,6 +76,9 @@ PlasmoidItem {
             Layout.alignment: Qt.AlignTop
             font.pixelSize: 1 * Kirigami.Units.gridUnit
             horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            wrapMode: Label.WrapAtWordBoundaryOrAnywhere
+            elide: Text.ElideRight
         }
 
         Label {
@@ -236,7 +262,7 @@ PlasmoidItem {
         repeat: true
         running: true
         onTriggered: {
-            let date = new Date()
+            const date = new Date()
             if (lyriks.playing) {
                 lyriks.progressUs = date.getTime() * 1000 - lyriks.tStartUs
                 let latestLine = { t: 0, text: "" }
