@@ -20,84 +20,20 @@ PlasmoidItem {
     property double progressUs: 0 // 当前播放进度，单位为微秒；用double防止整数溢出
     property list<var> lyrics: [] // list<{ t: int, text: string }> 时间单位为微秒，仅存储开始时间
     property bool playing: false
+    property var lyricPairComponent: Qt.createComponent("../components/LyricPair.qml")
+    property var currentLyricPair: null
 
     // UI
-    preferredRepresentation: {
-        if (location === 3) {
-            return compactRepresentation
-        }
-        return fillRepresentation
-    }
+    preferredRepresentation: fullRepresentation
 
-    // 面板组件——紧凑模式
-    compactRepresentation: Label {
-        id: lyricsLabelCompact
-        text: (lyriks.selectedPlayer === "") ? "Lyrics will appear here" : lyriks.lyricLine
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-        Layout.alignment: Qt.AlignTop
-        font.pixelSize: 0.75 * Kirigami.Units.gridUnit
-        Layout.preferredWidth: 8 * Kirigami.Units.gridUnit
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        wrapMode: Label.WrapAtWordBoundaryOrAnywhere
-        elide: Text.ElideRight
-    }
-
-    // 桌面组件——完整模式
-    fullRepresentation: ColumnLayout {
+    fullRepresentation: Item {
+        id: lyricContainer
         Layout.minimumWidth: 10 * Kirigami.Units.gridUnit
-        Layout.minimumHeight: 5 * Kirigami.Units.gridUnit
-        Layout.preferredWidth: 30 * Kirigami.Units.gridUnit
-        Layout.preferredHeight: 5 * Kirigami.Units.gridUnit
-
-        Label {
-            id: titleLabel
-            text: {
-                if (lyriks.title === "" || lyriks.selectedPlayer === "") {
-                    return "Lyriks - Title Goes Here"
-                } else {
-                    return lyriks.artist + " - " + lyriks.title
-                }
-            }
-            Layout.fillWidth: true
-            Layout.fillHeight: false
-            Layout.alignment: Qt.AlignTop
-            font.pixelSize: 1.5 * Kirigami.Units.gridUnit
-            Layout.preferredHeight: 2 * Kirigami.Units.gridUnit
-            horizontalAlignment: Text.AlignHCenter
-        }
-
-        Label {
-            id: lyricsLabel
-            text: (lyriks.selectedPlayer === "") ? "Lyrics will appear here" : lyriks.lyricLine
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.alignment: Qt.AlignTop
-            font.pixelSize: 1 * Kirigami.Units.gridUnit
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            wrapMode: Label.WrapAtWordBoundaryOrAnywhere
-            elide: Text.ElideRight
-        }
-
-        Label {
-            id: playerLabel
-            text: {
-                if (lyriks.selectedPlayer === "") {
-                    return "No player selected"
-                } else {
-                    return "Selected Player: " + lyriks.selectedPlayer
-                }
-            }
-            Layout.fillWidth: true
-            Layout.fillHeight: false
-            Layout.alignment: Qt.AlignBottom
-            font.pixelSize: 0.75 * Kirigami.Units.gridUnit
-            Layout.preferredHeight: 1 * Kirigami.Units.gridUnit
-            horizontalAlignment: Text.AlignHCenter
-        }
+        Layout.minimumHeight: 2 * Kirigami.Units.gridUnit
+        Layout.preferredWidth: 20 * Kirigami.Units.gridUnit
+        clip: true
     }
+
 
     // logic
     Component.onCompleted: {
@@ -181,6 +117,12 @@ PlasmoidItem {
 
         if ("Metadata" in properties) {
             let metadata = properties.Metadata
+            if ("xesam:artUrl" in metadata) {
+                console.log(metadata["xesam:artUrl"])
+            }
+            if ("xesam:artist" in metadata) {
+                lyriks.artist = metadata["xesam:artist"].join(" / ")
+            }
             if ("xesam:title" in metadata && lyriks.title !== String(metadata["xesam:title"])) {
                 lyriks.title = String(metadata["xesam:title"])
                 let date = new Date()
@@ -189,9 +131,17 @@ PlasmoidItem {
                 lyriks.lyrics = []
                 fetchLyricsTimer.retryCount = 0
                 fetchLyricsTimer.running = true
-            }
-            if ("xesam:artist" in metadata) {
-                lyriks.artist = metadata["xesam:artist"].join(" / ")
+                lyriks.artist = ""
+                if (lyriks.lyricPair) {
+                    lyriks.lyricPair.disappearAnimation.start()
+                }
+                lyriks.lyricPair = lyriks.lyricPairComponent.createObject(
+                    lyriks.lyricContainer,
+                    {
+                        primaryStr: lyriks.title,
+                        secondaryStr: lyriks.artist,
+                    }
+                )
             }
         }
 
@@ -265,14 +215,28 @@ PlasmoidItem {
             const date = new Date()
             if (lyriks.playing) {
                 lyriks.progressUs = date.getTime() * 1000 - lyriks.tStartUs
-                let latestLine = { t: 0, text: "" }
+                let latestLine = { t: -1, text: "" }
+                let latestLineIndex = -1
                 for (let i = 0; i < lyriks.lyrics.length; i++) {
                     const selectedLine = lyriks.lyrics[i]
                     if (lyriks.progressUs >= selectedLine.t && selectedLine.t > latestLine.t) {
                         latestLine = selectedLine
+                        latestLineIndex = i
                     }
                 }
-                lyriks.lyricLine = latestLine.text
+                if (lyriks.lyricLine !== latestLine.text && latestLineIndex !== -1) {
+                    lyriks.lyricLine = latestLine.text
+                    if (lyriks.lyricPair) {
+                        lyriks.lyricPair.disappearAnimation.start()
+                    }
+                    lyriks.lyricPair = lyriks.lyricPairComponent.createObject(
+                        lyriks.lyricContainer,
+                        {
+                            primaryStr: latestLine.text,
+                            secondaryStr: lyriks.lyrics[latestLineIndex + 1]?.text ?? "",
+                        }
+                    )
+                }
             }
         }
     }
