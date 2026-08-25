@@ -21,7 +21,9 @@ Item {
         height: parent.height * 0.5
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
-        font.pixelSize: 0.5 * Kirigami.Units.gridUnit
+        font.pixelSize: 0.75 * Kirigami.Units.gridUnit
+        scale: 2/3
+        transformOrigin: Item.Left
         opacity: 0
         clip: true
     }
@@ -34,7 +36,9 @@ Item {
         height: parent.height * 0.5
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
-        font.pixelSize: 0.5 * Kirigami.Units.gridUnit
+        font.pixelSize: 0.75 * Kirigami.Units.gridUnit
+        scale: 2/3
+        transformOrigin: Item.Left
         opacity: 0
         clip: true
     }
@@ -59,8 +63,8 @@ Item {
         }
         PropertyAnimation {
             target: primary
-            property: "font.pixelSize"
-            to: 0.75 * Kirigami.Units.gridUnit
+            property: "scale"
+            to: 1
             duration: 250
             easing: lyricPairRoot.easingMode
         }
@@ -113,8 +117,8 @@ Item {
             }
             PropertyAnimation {
                 target: secondary
-                property: "font.pixelSize"
-                to: 0.75 * Kirigami.Units.gridUnit
+                property: "scale"
+                to: 1
                 duration: 250
                 easing: lyricPairRoot.easingMode
             }
