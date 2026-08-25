@@ -1,5 +1,3 @@
-pragma ComponentBehavior: Bound
-
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -22,6 +20,7 @@ PlasmoidItem {
     property bool playing: false
     property var lyricPairComponent: Qt.createComponent("../components/LyricPair.qml")
     property var currentLyricPair: null
+    property var lyricContainer: null
 
     // UI
     preferredRepresentation: fullRepresentation
@@ -32,6 +31,10 @@ PlasmoidItem {
         Layout.minimumHeight: 2 * Kirigami.Units.gridUnit
         Layout.preferredWidth: 20 * Kirigami.Units.gridUnit
         clip: true
+
+        Component.onCompleted: {
+            lyriks.lyricContainer = lyricContainer
+        }
     }
 
 
@@ -131,11 +134,10 @@ PlasmoidItem {
                 lyriks.lyrics = []
                 fetchLyricsTimer.retryCount = 0
                 fetchLyricsTimer.running = true
-                lyriks.artist = ""
-                if (lyriks.lyricPair) {
-                    lyriks.lyricPair.disappearAnimation.start()
+                if (lyriks.currentLyricPair) {
+                    lyriks.currentLyricPair.timer.running = true
                 }
-                lyriks.lyricPair = lyriks.lyricPairComponent.createObject(
+                lyriks.currentLyricPair = lyriks.lyricPairComponent.createObject(
                     lyriks.lyricContainer,
                     {
                         primaryStr: lyriks.title,
@@ -226,10 +228,10 @@ PlasmoidItem {
                 }
                 if (lyriks.lyricLine !== latestLine.text && latestLineIndex !== -1) {
                     lyriks.lyricLine = latestLine.text
-                    if (lyriks.lyricPair) {
-                        lyriks.lyricPair.disappearAnimation.start()
+                    if (lyriks.currentLyricPair) {
+                        lyriks.currentLyricPair.timer.running = true
                     }
-                    lyriks.lyricPair = lyriks.lyricPairComponent.createObject(
+                    lyriks.currentLyricPair = lyriks.lyricPairComponent.createObject(
                         lyriks.lyricContainer,
                         {
                             primaryStr: latestLine.text,

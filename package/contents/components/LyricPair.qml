@@ -4,14 +4,14 @@ import org.kde.kirigami as Kirigami
 
 Item {
     id: lyricPairRoot
-    height: parent.height
-    width: parent.width
+    anchors.fill: parent
     clip: true
 
     property string primaryStr
     property string secondaryStr
     property int activeTime: 0
     property var easingMode: Easing.InOutSine
+    property var timer: null
 
     Label {
         id: primary
@@ -82,7 +82,7 @@ Item {
         }
     }
 
-    SequentialAnimation{
+    SequentialAnimation {
         id: disappearAnimation
         running: false
 
@@ -141,7 +141,9 @@ Item {
         repeat: parent.activeTime > 0
         property int counter: 0
         onTriggered: {
+            parent.timer = animationTimer
             console.log("Triggered: ", parent.primaryStr, parent.secondaryStr)
+            console.log("width: ", lyricPairRoot.width, " height: ", lyricPairRoot.height)
             if (counter == 0) {
                 appearAnimation.start()
                 counter = 1
