@@ -11,6 +11,11 @@ Item {
 
     property LyricPair currentPair: null
 
+    Item {
+        id: lyricPairContainer
+        anchors.fill: parent
+    }
+
     Component {
         id: lyricPairComponent
         LyricPair {}
@@ -48,6 +53,6 @@ Item {
         if (currentPair) {
             currentPair.end()
         }
-        currentPair = lyricPairComponent.createObject(lv, { primaryText: primary, secondaryText: secondary })
+        currentPair = lyricPairComponent.createObject(lyricPairContainer, { primaryText: primary, secondaryText: secondary })
     }
 }
