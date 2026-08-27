@@ -23,25 +23,23 @@ Item {
         running: true
         onTriggered: {
             const date = new Date()
-            if (lm.tl.playing) {
-                let latestLine = { t: -1, text: "" }
-                let latestLineIndex = -1
-                for (let i = 0; i < lm.mm.lyrics.length; i++) {
-                    const selectedLine = lm.mm.lyrics[i]
-                    if (lm.tl.progressUs >= selectedLine.t && selectedLine.t > latestLine.t) {
-                        latestLine = selectedLine
-                        latestLineIndex = i
-                    }
+            let latestLine = { t: -1, text: "" }
+            let latestLineIndex = -1
+            for (let i = 0; i < lm.mm.lyrics.length; i++) {
+                const selectedLine = lm.mm.lyrics[i]
+                if (lm.tl.progressUs >= selectedLine.t && selectedLine.t > latestLine.t) {
+                    latestLine = selectedLine
+                    latestLineIndex = i
                 }
-                if (latestLineIndex !== -1 && latestLineIndex !== lm.lastIndex) {
-                    let primary = latestLine.text
-                    let secondary = lm.mm.lyrics[latestLineIndex + 1]?.text ?? ""
-                    if (latestLine.trans !== "") {
-                        secondary = latestLine.trans
-                    }
-                    lm.updateLyrics(primary, secondary)
-                    lm.lastIndex = latestLineIndex
+            }
+            if (latestLineIndex !== -1 && latestLineIndex !== lm.lastIndex) {
+                let primary = latestLine.text
+                let secondary = lm.mm.lyrics[latestLineIndex + 1]?.text ?? ""
+                if (latestLine.trans !== "") {
+                    secondary = latestLine.trans
                 }
+                lm.updateLyrics(primary, secondary)
+                lm.lastIndex = latestLineIndex
             }
         }
     }
