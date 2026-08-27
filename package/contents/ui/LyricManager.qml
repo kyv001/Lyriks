@@ -3,7 +3,6 @@ import QtQuick
 Item {
     id: lm
 
-    required property PlayerManager pm
     required property MetaManager mm
     required property TimeLine tl
     property int lastIndex: -1
@@ -11,7 +10,7 @@ Item {
     signal updateLyrics(string primary, string secondary)
 
     Connections {
-        target: lm.pm
+        target: lm.mm
         function onTrackChanged(metadata) {
             lm.lastIndex = -1
         }

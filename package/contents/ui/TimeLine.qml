@@ -13,18 +13,20 @@ Item {
 
         function onStart(position: double) {
             const date = new Date()
-            tl.progressUs = position
+            if (position >= 0) { // -1 代表没有时间信息
+                tl.progressUs = position
+            }
             tl.tStartUs = date.getTime() * 1000 - tl.progressUs
             tl.playing = true
         }
 
-        function onSeeked(position: double) {
+        function onSeek(position: double) {
             const date = new Date()
             tl.progressUs = position
             tl.tStartUs = date.getTime() * 1000 - position
         }
 
-        function onPaused() {
+        function onPause() {
             tl.playing = false
         }
     }

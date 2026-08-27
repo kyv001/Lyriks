@@ -9,7 +9,7 @@ Item {
     signal pause()
     signal seek(double seekTimeUs)
     signal playerChanged(string playerName)
-    signal trackChanged(var metadata)
+    signal metaChanged(var metadata)
     // 主动事件
     signal doStart() // NOT-IMPLEMENTED
     signal doPause() // NOT-IMPLEMENTED
@@ -92,13 +92,13 @@ Item {
     function processProperties(properties) {
         if ("PlaybackStatus" in properties) {
             if (String(properties.PlaybackStatus) === "Playing") {
-                pm.start(properties.Position ?? 0)
+                pm.start(properties.Position ?? -1)
             } else {
                 pm.pause()
             }
         }
         if ("Metadata" in properties) {
-            pm.trackChanged(properties["Metadata"])
+            pm.metaChanged(properties["Metadata"])
         }
     }
 }

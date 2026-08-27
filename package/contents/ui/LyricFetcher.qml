@@ -42,6 +42,7 @@ Item {
                 if (lyrics.length > 0 || retryCount >= 3) {
                     running = false
                     fetchFinished(lyrics, title, artists, player)
+                    destroy()
                     return
                 }
                 if (!requestFinished) return // 请求还没结束，等下一个循环
@@ -80,6 +81,4 @@ Item {
             }
         }
     }
-
-
 }

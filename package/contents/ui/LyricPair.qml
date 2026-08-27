@@ -136,7 +136,7 @@ Item {
         }
 
         ScriptAction {
-            onStarted: {
+            script: {
                 lyricPairRoot.destroy()
             }
         }

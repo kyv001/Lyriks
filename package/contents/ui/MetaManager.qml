@@ -3,7 +3,7 @@ import QtQuick
 Item {
     id: mm
 
-    signal metaChanged(string title, list<string> artists)
+    signal trackChanged(string title, list<string> artists)
     required property PlayerManager pm
     property list<string> artists: []
     property string title: ""
@@ -13,7 +13,7 @@ Item {
         id: lf
 
         onFetchFinished: function(lyrics, title, artists, player) {
-            if (mm.artists.toString() === artists.toString() && mm.title === title && mm.lyrics !== lyrics) {
+            if (mm.artists.toString() === artists.toString() && mm.title === title) {
                 mm.lyrics = lyrics
             }
         }
@@ -21,15 +21,15 @@ Item {
 
     Connections {
         target: mm.pm
-        function onTrackChanged(metadata) {
-            if ("xesam:artist" in metadata) {
-                mm.artists = metadata["xesam:artist"]
-            }
+        function onMetaChanged(metadata) {
             if ("xesam:title" in metadata && mm.title !== String(metadata["xesam:title"])) {
+                if ("xesam:artist" in metadata) {
+                    mm.artists = metadata["xesam:artist"]
+                }
                 mm.title = String(metadata["xesam:title"])
+                lf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer)
+                mm.trackChanged(mm.title, mm.artists)
             }
-            lf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer)
-            mm.metaChanged(mm.title, mm.artists)
         }
     }
 }

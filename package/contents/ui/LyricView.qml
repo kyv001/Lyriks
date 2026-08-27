@@ -13,8 +13,7 @@ Item {
 
     Component {
         id: lyricPairComponent
-        LyricPair {
-        }
+        LyricPair {}
     }
 
     PlayerManager {
@@ -30,16 +29,16 @@ Item {
         id: mm
         pm: pm
 
-        onMetaChanged: function(title: string, artists: list<string>) {
+        onTrackChanged: function(title: string, artists: list<string>) {
             lv.updateCurrentPair(title, artists.join(" / "))
         }
     }
 
     LyricManager {
         id: lm
-        pm: pm
         mm: mm
         tl: tl
+
         onUpdateLyrics: function(primary: string, secondary: string) {
             lv.updateCurrentPair(primary, secondary)
         }
