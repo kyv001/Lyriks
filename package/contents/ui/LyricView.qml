@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 
-Item {
+RowLayout {
     id: lv
     Layout.minimumWidth: 10 * Kirigami.Units.gridUnit
     Layout.minimumHeight: 2 * Kirigami.Units.gridUnit
@@ -11,9 +11,17 @@ Item {
 
     property LyricPair currentPair: null
 
+    CoverImage {
+        id: ci
+        Layout.fillHeight: true
+        Layout.preferredWidth: height
+        cover: mm.cover
+    }
+
     Item {
         id: lyricPairContainer
-        anchors.fill: parent
+        Layout.fillWidth: true
+        Layout.fillHeight: true
     }
 
     Component {

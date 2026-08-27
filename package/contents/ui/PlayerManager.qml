@@ -3,12 +3,12 @@ import org.kde.plasma.workspace.dbus as DBus
 
 Item {
     id: pm
+    visible: false
 
     // 被动事件
     signal start(double position)
     signal pause()
     signal seek(double seekTimeUs)
-    signal playerChanged(string playerName)
     signal metaChanged(var metadata)
     // 主动事件
     signal doStart() // NOT-IMPLEMENTED

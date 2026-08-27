@@ -2,6 +2,7 @@ import QtQuick
 
 Item {
     id: lf
+    visible: false
 
     signal startFetch(string title, list<string> artists, string player)
     signal fetchFinished(

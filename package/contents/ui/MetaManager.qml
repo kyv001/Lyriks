@@ -2,12 +2,14 @@ import QtQuick
 
 Item {
     id: mm
+    visible: false
 
     signal trackChanged(string title, list<string> artists)
     required property PlayerManager pm
     property list<string> artists: []
     property string title: ""
     property var lyrics: []
+    property string cover: ""
 
     LyricFetcher {
         id: lf
@@ -16,6 +18,13 @@ Item {
             if (mm.artists.toString() === artists.toString() && mm.title === title) {
                 mm.lyrics = lyrics
             }
+        }
+    }
+
+    CoverFetcher {
+        id: cf
+        onFetchFinished: function(cover) {
+            mm.cover = cover
         }
     }
 
@@ -28,8 +37,14 @@ Item {
                 }
                 mm.title = String(metadata["xesam:title"])
                 lf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer)
+                cf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer)
                 mm.trackChanged(mm.title, mm.artists)
             }
         }
+    }
+
+    onTrackChanged: function(title, artists) {
+        mm.lyrics = []
+        mm.cover = ""
     }
 }

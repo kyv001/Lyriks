@@ -2,6 +2,7 @@ import QtQuick
 
 Item {
     id: tl
+    visible: false
 
     required property PlayerManager pm
     property bool playing: false

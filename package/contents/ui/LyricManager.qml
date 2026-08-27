@@ -2,6 +2,7 @@ import QtQuick
 
 Item {
     id: lm
+    visible: false
 
     required property MetaManager mm
     required property TimeLine tl
