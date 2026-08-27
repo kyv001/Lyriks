@@ -34,7 +34,12 @@ Item {
                     }
                 }
                 if (latestLineIndex !== -1 && latestLineIndex !== lm.lastIndex) {
-                    lm.updateLyrics(latestLine.text, lm.mm.lyrics[latestLineIndex + 1]?.text ?? "")
+                    let primary = latestLine.text
+                    let secondary = lm.mm.lyrics[latestLineIndex + 1]?.text ?? ""
+                    if (latestLine.trans !== "") {
+                        secondary = latestLine.trans
+                    }
+                    lm.updateLyrics(primary, secondary)
                     lm.lastIndex = latestLineIndex
                 }
             }

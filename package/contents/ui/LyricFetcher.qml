@@ -36,6 +36,11 @@ Item {
             property string title: ""
             property list<string> artists: []
             property string player: ""
+            /* {
+                t: double,
+                text: string,
+                trans: string,
+            } */
             property var lyrics: []
 
             onTriggered: function() {
@@ -70,7 +75,8 @@ Item {
                                     }
                                     lyrics.push({
                                         t: respLyrics[i]["startTime"] * 1000,
-                                        text: lyricLine
+                                        text: lyricLine,
+                                        trans: respLyrics[i]["translatedLyric"],
                                     })
                                 }
                             }
