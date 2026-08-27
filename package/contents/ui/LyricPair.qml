@@ -7,15 +7,19 @@ Item {
     anchors.fill: parent
     clip: true
 
-    property string primaryStr
-    property string secondaryStr
-    property int activeTime: 0
+    signal end
+
+    required property string primaryText
+    required property string secondaryText
     property var easingMode: Easing.InOutSine
-    property var timer: null
+
+    onEnd: {
+        disappearAnimation.running = true
+    }
 
     Label {
         id: primary
-        text: parent.primaryStr
+        text: parent.primaryText
         width: parent.width
         y: parent.height * 0.5
         height: parent.height * 0.5
@@ -30,7 +34,7 @@ Item {
 
     Label {
         id: secondary
-        text: parent.secondaryStr
+        text: parent.secondaryText
         width: parent.width
         y: parent.height * 1
         height: parent.height * 0.5
@@ -45,7 +49,7 @@ Item {
 
     ParallelAnimation {
         id: appearAnimation
-        running: false
+        running: true
         // Primary
         PropertyAnimation {
             target: primary
@@ -134,26 +138,6 @@ Item {
         ScriptAction {
             onStarted: {
                 lyricPairRoot.destroy()
-            }
-        }
-    }
-
-    Timer {
-        id: animationTimer
-        interval: parent.activeTime
-        running: true
-        repeat: parent.activeTime > 0
-        property int counter: 0
-        onTriggered: {
-            parent.timer = animationTimer
-            console.log("Triggered: ", parent.primaryStr, parent.secondaryStr)
-            console.log("width: ", lyricPairRoot.width, " height: ", lyricPairRoot.height)
-            if (counter == 0) {
-                appearAnimation.start()
-                counter = 1
-            } else {
-                disappearAnimation.start()
-                animationTimer.running = false
             }
         }
     }
