@@ -33,13 +33,11 @@ Item {
 
     Row {
         id: primary
-        width: parent.width
         y: parent.height * 0.5
         height: parent.height * 0.5
         scale: 2 / 3
         transformOrigin: Item.Left
         opacity: 0
-        clip: true
         spacing: 0 // 每个词已经自带空格
 
         Component {
@@ -112,17 +110,41 @@ Item {
                 });
             }
         }
+
+        PropertyAnimation {
+            id: primaryAnimation
+            target: primary
+            property: "x"
+            from: 0
+            to: primary.width > lyricPairRoot.width ? lyricPairRoot.width - primary.width : 0
+            duration: {
+                let words = lyricPairRoot.primaryWords;
+                return Math.min(500, words[words.length - 1].t1 - words[0].t0);
+            }
+            running: false
+        }
+
+        Timer {
+            interval: 250
+            repeat: true
+            running: true
+            onTriggered: {
+                let words = lyricPairRoot.primaryWords;
+                if (lyricPairRoot.tl.progressUs > (words[words.length - 1].t1 + words[0].t0 - primaryAnimation.duration) / 2 * 1000) {
+                    primaryAnimation.running = true;
+                    running = false
+                }
+            }
+        }
     }
 
     Row {
         id: secondary
-        width: parent.width
         y: parent.height * 1
         height: parent.height * 0.5
         scale: 2 / 3
         transformOrigin: Item.Left
         opacity: 0
-        clip: true
 
         Component {
             id: secondaryWordComponent

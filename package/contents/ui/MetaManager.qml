@@ -49,7 +49,9 @@ Item {
             }
         }
 
-        function onPlayerExited() { mm.clear(); }
+        function onPlayerExited() {
+            mm.clear();
+        }
     }
 
     function clear() {
