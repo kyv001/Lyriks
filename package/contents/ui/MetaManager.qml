@@ -24,8 +24,10 @@ Item {
 
     CoverFetcher {
         id: cf
-        onFetchFinished: function (cover) {
-            mm.cover = cover;
+        onFetchFinished: function (cover, title, artists, player) {
+            if (mm.artists.toString() === artists.toString() && mm.title === title) {
+                mm.cover = cover;
+            }
         }
     }
 
