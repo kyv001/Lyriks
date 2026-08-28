@@ -31,7 +31,7 @@ Item {
             let latestLineIndex = -1;
             for (let i = 0; i < lm.mm.lyrics.length; i++) {
                 const selectedLine = lm.mm.lyrics[i];
-                if (lm.tl.progressUs >= selectedLine.t && selectedLine.t > latestLine.t) {
+                if (lm.tl.progressUs >= selectedLine.t * 1000 && selectedLine.t > latestLine.t) {
                     latestLine = selectedLine;
                     latestLineIndex = i;
                 }

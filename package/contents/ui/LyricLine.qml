@@ -6,10 +6,9 @@ import QtQuick.Effects
 import org.kde.kirigami as Kirigami
 
 Row {
+    id: ll
     opacity: 0
     spacing: 0 // 每个词已经自带空格
-
-    id: ll
 
     required property TimeLine tl
     required property list<var> primaryWords
@@ -50,6 +49,9 @@ Row {
                 layer.enabled: true
                 Rectangle {
                     width: {
+                        if (ll.primaryWords.length === 1) {
+                            return parent.width; // 并非逐词
+                        }
                         if (ll.tl.progressUs < primaryWordRoot.t0Us) {
                             return 0;
                         } else if (primaryWordRoot.t0Us >= primaryWordRoot.t1Us || ll.tl.progressUs >= primaryWordRoot.t1Us) {
@@ -94,7 +96,8 @@ Row {
         to: ll.width > ll.viewWidth ? ll.viewWidth - ll.width : 0
         duration: {
             let words = ll.primaryWords;
-            if (words.length === 0) return 0;
+            if (words.length === 0)
+                return 0;
             return Math.min(1000, words[words.length - 1].t1 - words[0].t0);
         }
         running: false
@@ -112,7 +115,7 @@ Row {
             }
             if (ll.tl.progressUs > (words[words.length - 1].t1 + words[0].t0 - primaryAnimation.duration) / 2 * 1000) {
                 primaryAnimation.running = true;
-                running = false
+                running = false;
             }
         }
     }

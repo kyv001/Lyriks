@@ -148,16 +148,16 @@ Item {
                                 const chosenLyric = resp.yrc ? resp.yrc.lyric : (resp.lrc ? resp.lrc.lyric : null);
                                 if (chosenLyric === null) {
                                     givenUp = true;
-                                    return
+                                    return;
                                 }
                                 let origLyric = parseLyric(chosenLyric, duration);
                                 // --- 翻译歌词 ---
                                 const chosenTrans = resp.ytlrc ? resp.ytlrc.lyric : (resp.tlyric ? resp.tlyric.lyric : null);
-                                let transLyric = []
+                                let transLyric = [];
                                 if (chosenTrans !== null) {
                                     transLyric = parseLyric(chosenTrans, duration);
                                 }
-                                lyrics = alignTrans(origLyric, transLyric)
+                                lyrics = alignTrans(origLyric, transLyric);
                             }
                         }
                     }
@@ -165,12 +165,9 @@ Item {
                 xhr.send();
             }
 
-            function parseLyric(rawLyric: string, duration: int) {
-                let lyric = []
-                const lyricLines = rawLyric
-                    .split("\n")
-                    .filter(line => line.trim().startsWith("["))
-                    .map(line => line.trim())
+            function parseLyric(rawLyric, duration) {
+                let lyric = [];
+                const lyricLines = rawLyric.split("\n").filter(line => line.trim().startsWith("[")).map(line => line.trim());
                 /*
                 Format A
                 [16210,3460](16210,670,0)还(16880,410,0)没...
@@ -188,9 +185,9 @@ Item {
                 1 分钟
                 2 秒
                 */
-                const lineTimeA = /^\[(\d+),(\d+)\](.*)/
-                const wordA = /\((\d+),(\d+),(\d+)\)([^|(])+/g
-                const lineTimeB = /^\[(\d+):([\d\.]+)\](.*)/
+                const lineTimeA = /^\[(\d+),(\d+)\](.*)/;
+                const wordA = /\((\d+),(\d+),(\d+)\)([^|(]+)/g;
+                const lineTimeB = /^\[(\d+):([\d\.]+)\](.*)/;
                 for (let i = 0; i < lyricLines.length; i++) {
                     let words = [];
                     const rawLine = lyricLines[i];
@@ -198,21 +195,35 @@ Item {
                         // i. 歌词行时间
                         const lineTimeMatch = rawLine.match(lineTimeA);
                         const lineStart = parseInt(lineTimeMatch[1]);
-                        const wordMatches = lineTimeMatch[3].matchAll(wordA)
-                        for (const wordMatch of wordMatches) {
+                        let wordMatch;
+                        while ((wordMatch = wordA.exec(lineTimeMatch[3])) !== null) {
                             // ii. 单词时间
-                            const wordText = wordMatch[4]
-                            const wordT0 = parseInt(wordMatch[1])
-                            const wordT1 = wordT0 + parseInt(wordMatch[2])
-                            words.push({ text: wordText, t0: wordT0, t1: wordT1 })
+                            const wordText = wordMatch[4];
+                            const wordT0 = parseInt(wordMatch[1]);
+                            const wordT1 = wordT0 + parseInt(wordMatch[2]);
+                            words.push({
+                                text: wordText,
+                                t0: wordT0,
+                                t1: wordT1
+                            });
                         }
-                        lyric.push({ t: lineStart, words: words })
+                        lyric.push({
+                            t: lineStart,
+                            words: words
+                        });
                     } else if (lineTimeB.test(rawLine)) {
                         // i. 歌词行时间
-                        const lineTimeMatch = rawLine.match(lineTimeB)
-                        const lineStart = (parseInt(lineTimeMatch[1]) * 60 + parseFloat(lineTimeMatch[2])) * 1000
-                        words.push({ text: lineTimeMatch[3], t0: lineStart, t1: null })
-                        lyric.push({ t: lineStart, words: words })
+                        const lineTimeMatch = rawLine.match(lineTimeB);
+                        const lineStart = (parseInt(lineTimeMatch[1]) * 60 + parseFloat(lineTimeMatch[2])) * 1000;
+                        words.push({
+                            text: lineTimeMatch[3],
+                            t0: lineStart,
+                            t1: null
+                        });
+                        lyric.push({
+                            t: lineStart,
+                            words: words
+                        });
                     }
                 }
                 // 解决 t1: null
@@ -221,33 +232,37 @@ Item {
                         if (lyric[i].words[j].t1 === null) {
                             if (j < lyric[i].words.length - 1) {
                                 // 同一行有下一词：取下一词起始时间为结束时间
-                                lyric[i].words[j].t1 = lyric[i].words[j + 1].t0
+                                lyric[i].words[j].t1 = lyric[i].words[j + 1].t0;
                             } else if (i < lyric.length - 1) {
                                 // 同一行无下一词：取下一行起始时间为结束时间
-                                lyric[i].words[j].t1 = lyric[i + 1].t
+                                lyric[i].words[j].t1 = lyric[i + 1].t;
                             } else {
                                 // 最后一行：取总时长为结束时间
-                                lyric[i].words[j].t1 = duration
+                                lyric[i].words[j].t1 = duration;
                             }
                         }
                     }
                 }
-                return lyric
+                return lyric;
             }
 
             function alignTrans(origLyric, transLyric) {
-                let lyrics = []
+                let lyrics = [];
                 for (let i = 0; i < origLyric.length; i++) {
-                    lyrics.push({ t: origLyric[i].t, words: origLyric[i].words, trans: [] })
-                    let transT = -1
+                    lyrics.push({
+                        t: origLyric[i].t,
+                        words: origLyric[i].words,
+                        trans: []
+                    });
+                    let transT = -1;
                     for (let j = 0; j < transLyric.length; j++) {
                         if (Math.abs(transLyric[j].t - lyrics[i].t) < Math.min(Math.abs(lyrics[i].t - transT), 1000)) {
-                            lyrics[i].trans = transLyric[j].words
-                            transT = transLyric[j].t
+                            lyrics[i].trans = transLyric[j].words;
+                            transT = transLyric[j].t;
                         }
                     }
                 }
-                return lyrics
+                return lyrics;
             }
         }
     }
