@@ -56,7 +56,7 @@ Item {
             function fetchCover(title, artists, player) {
                 let xhr = new XMLHttpRequest()
                 xhr.timeout = 1000
-                xhr.open("GET", apiUrl + "/cloudsearch?keywords=" + encodeURIComponent(title) + "&limit=1")
+                xhr.open("GET", apiUrl + "/cloudsearch?keywords=" + encodeURIComponent(title + " " + artists.join(" ")) + "&limit=1")
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         requestFinished = true
