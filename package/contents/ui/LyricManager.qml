@@ -39,14 +39,8 @@ Item {
             if (latestLineIndex !== -1 && latestLineIndex !== lm.lastIndex) {
                 let primary = latestLine.words;
                 let secondary = lm.mm.lyrics[latestLineIndex + 1]?.words ?? [];
-                if (latestLine.trans !== "") {
-                    secondary = [
-                        {
-                            text: latestLine.trans,
-                            t0: 0,
-                            t1: 0
-                        }
-                    ];
+                if (latestLine.trans && latestLine.trans.length > 0) {
+                    secondary = latestLine.trans;
                 }
                 lm.updateLyrics(primary, secondary);
                 lm.lastIndex = latestLineIndex;
