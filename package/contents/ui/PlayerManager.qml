@@ -7,12 +7,12 @@ Item {
 
     // 被动事件
     signal start(double position)
-    signal pause()
+    signal pause
     signal seek(double seekTimeUs)
     signal metaChanged(var metadata)
     // 主动事件
-    signal doStart() // NOT-IMPLEMENTED
-    signal doPause() // NOT-IMPLEMENTED
+    signal doStart // NOT-IMPLEMENTED
+    signal doPause // NOT-IMPLEMENTED
 
     property list<string> players: []
     property string selectedPlayer: ""
@@ -26,16 +26,16 @@ Item {
             arguments: []
         },
         // success
-        function(reply) {
-            pm.players = reply.value.filter((name) => (name.startsWith("org.mpris.MediaPlayer2.")))
+        function (reply) {
+            pm.players = reply.value.filter(name => (name.startsWith("org.mpris.MediaPlayer2.")));
             if (!pm.players.includes(pm.selectedPlayer)) {
-                pm.selectedPlayer = pm.players.length > 0 ? pm.players[0] : ""
+                pm.selectedPlayer = pm.players.length > 0 ? pm.players[0] : "";
             }
         },
         // error
-        function(error) {
-            console.warn("Error getting players: " + error.message)
-        })
+        function (error) {
+            console.warn("Error getting players: " + error.message);
+        });
     }
 
     DBus.SignalWatcher {
@@ -47,7 +47,7 @@ Item {
         iface: "org.mpris.MediaPlayer2.Player"
 
         function dbusSeeked(position) {
-            pm.seek(position)
+            pm.seek(position);
         }
     }
 
@@ -59,16 +59,16 @@ Item {
         iface: "org.freedesktop.DBus"
 
         function dbusNameOwnerChanged(name, oldOwner, newOwner) {
-            name = String(name)
-            oldOwner = String(oldOwner)
-            newOwner = String(newOwner)
+            name = String(name);
+            oldOwner = String(oldOwner);
+            newOwner = String(newOwner);
             if (newOwner === "") { // 播放器下线
-                pm.players = pm.players.filter((player) => player !== name)
+                pm.players = pm.players.filter(player => player !== name);
             } else if (oldOwner === "" && name.startsWith("org.mpris.MediaPlayer2.") && !pm.players.includes(name)) { // 播放器上线
-                pm.players.push(name)
+                pm.players.push(name);
             }
             if (!pm.players.includes(pm.selectedPlayer)) { // 若当前播放器是空或者已经下线，重新分配一个播放器
-                pm.selectedPlayer = pm.players.length > 0 ? pm.players[0] : ""
+                pm.selectedPlayer = pm.players.length > 0 ? pm.players[0] : "";
             }
         }
     }
@@ -82,7 +82,7 @@ Item {
 
         Component.onCompleted: {
             if (pm.selectedPlayer !== "") {
-                updateAll()
+                updateAll();
             }
         }
         onPropertiesChanged: updateAll()
@@ -92,13 +92,13 @@ Item {
     function processProperties(properties) {
         if ("PlaybackStatus" in properties) {
             if (String(properties.PlaybackStatus) === "Playing") {
-                pm.start(properties.Position ?? -1)
+                pm.start(properties.Position ?? -1);
             } else {
-                pm.pause()
+                pm.pause();
             }
         }
         if ("Metadata" in properties) {
-            pm.metaChanged(properties["Metadata"])
+            pm.metaChanged(properties["Metadata"]);
         }
     }
 }

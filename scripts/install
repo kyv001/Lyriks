@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-kpackagetool6 --type Plasma/Applet --install ./package

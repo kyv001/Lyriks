@@ -9,6 +9,7 @@ RowLayout {
     Layout.preferredWidth: 20 * Kirigami.Units.gridUnit
     clip: true
 
+    property LyricPair titlePair: null
     property LyricPair currentPair: null
 
     CoverImage {
@@ -42,8 +43,9 @@ RowLayout {
         id: mm
         pm: pm
 
-        onTrackChanged: function(title: string, artists: list<string>) {
-            lv.updateCurrentPair(title, artists.join(" / "))
+        onTrackChanged: function (title: string, artists: list<string>) {
+            lv.updateTitlePair(title, artists.join(" / "));
+            lv.updateCurrentPair(title, artists.join(" / "));
         }
     }
 
@@ -52,15 +54,31 @@ RowLayout {
         mm: mm
         tl: tl
 
-        onUpdateLyrics: function(primary: string, secondary: string) {
-            lv.updateCurrentPair(primary, secondary)
+        onUpdateLyrics: function (primary: string, secondary: string) {
+            lv.updateCurrentPair(primary, secondary);
         }
+    }
+
+    function updateTitlePair(primary: string, secondary: string) {
+        if (titlePair) {
+            titlePair.end();
+        }
+        titlePair = lyricPairComponent.createObject(lyricPairContainer, {
+            primaryText: primary,
+            secondaryText: secondary,
+            tl: tl
+        });
+        titlePair.visible = false;
     }
 
     function updateCurrentPair(primary: string, secondary: string) {
         if (currentPair) {
-            currentPair.end()
+            currentPair.end();
         }
-        currentPair = lyricPairComponent.createObject(lyricPairContainer, { primaryText: primary, secondaryText: secondary })
+        currentPair = lyricPairComponent.createObject(lyricPairContainer, {
+            primaryText: primary,
+            secondaryText: secondary,
+            tl: tl
+        });
     }
 }

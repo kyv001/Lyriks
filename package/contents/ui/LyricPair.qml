@@ -9,12 +9,13 @@ Item {
 
     signal end
 
+    required property TimeLine tl
     required property string primaryText
     required property string secondaryText
     property var easingMode: Easing.InOutSine
 
     onEnd: {
-        disappearAnimation.running = true
+        disappearAnimation.running = true;
     }
 
     Label {
@@ -26,7 +27,7 @@ Item {
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
         font.pixelSize: 0.75 * Kirigami.Units.gridUnit
-        scale: 2/3
+        scale: 2 / 3
         transformOrigin: Item.Left
         opacity: 0
         clip: true
@@ -41,7 +42,7 @@ Item {
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
         font.pixelSize: 0.75 * Kirigami.Units.gridUnit
-        scale: 2/3
+        scale: 2 / 3
         transformOrigin: Item.Left
         opacity: 0
         clip: true
@@ -137,7 +138,7 @@ Item {
 
         ScriptAction {
             script: {
-                lyricPairRoot.destroy()
+                lyricPairRoot.destroy();
             }
         }
     }

@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-kpackagetool6 --type Plasma/Applet --remove top.lyriks.lyriks

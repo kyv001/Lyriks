@@ -13,22 +13,22 @@ Item {
         target: tl.pm
 
         function onStart(position: double) {
-            const date = new Date()
+            const date = new Date();
             if (position >= 0) { // -1 代表没有时间信息
-                tl.progressUs = position
+                tl.progressUs = position;
             }
-            tl.tStartUs = date.getTime() * 1000 - tl.progressUs
-            tl.playing = true
+            tl.tStartUs = date.getTime() * 1000 - tl.progressUs;
+            tl.playing = true;
         }
 
         function onSeek(position: double) {
-            const date = new Date()
-            tl.progressUs = position
-            tl.tStartUs = date.getTime() * 1000 - position
+            const date = new Date();
+            tl.progressUs = position;
+            tl.tStartUs = date.getTime() * 1000 - position;
         }
 
         function onPause() {
-            tl.playing = false
+            tl.playing = false;
         }
     }
 
@@ -38,9 +38,9 @@ Item {
         repeat: true
         running: true
         onTriggered: {
-            const date = new Date()
+            const date = new Date();
             if (tl.playing) {
-                tl.progressUs = date.getTime() * 1000 - tl.tStartUs
+                tl.progressUs = date.getTime() * 1000 - tl.tStartUs;
             }
         }
     }
