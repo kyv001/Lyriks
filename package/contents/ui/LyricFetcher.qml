@@ -4,10 +4,10 @@ Item {
     id: lf
     visible: false
 
-    signal startFetch(string title, list<string> artists, string player)
+    signal startFetch(string title, list<string> artists, string player, int lengthUs)
     signal fetchFinished(var lyrics, string title, list<string> artists, string player)
 
-    onStartFetch: function (title, artists, player) {
+    onStartFetch: function (title, artists, player, lengthUs) {
         let job = fetchJob.createObject(lf);
         if (job == null) {
             console.log("Failed to create fetch job for " + title);
@@ -16,6 +16,7 @@ Item {
             job.title = title;
             job.artists = artists;
             job.player = player;
+            job.lengthUs = lengthUs;
         }
     }
 
@@ -32,6 +33,7 @@ Item {
             property string title: ""
             property list<string> artists: []
             property string player: ""
+            property int lengthUs: 0
             /* {
                 t: double,
                 words: list<{

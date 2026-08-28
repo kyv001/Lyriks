@@ -10,6 +10,7 @@ Item {
     property string title: ""
     property var lyrics: []
     property string cover: ""
+    property double lengthUs: 0
 
     LyricFetcher {
         id: lf
@@ -36,20 +37,24 @@ Item {
                     mm.artists = metadata["xesam:artist"];
                 }
                 mm.title = String(metadata["xesam:title"]);
-                lf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer);
-                cf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer);
                 mm.trackChanged(mm.title, mm.artists);
+                mm.clear();
+                if ("xesam:length" in metadata) {
+                    mm.lengthUs = metadata["xesam:length"];
+                } else {
+                    mm.lengthUs = 0;
+                }
+                lf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer, mm.lengthUs);
+                cf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer, mm.lengthUs);
             }
         }
 
-        function onPlayerExited() {
-            mm.lyrics = [];
-            mm.cover = "";
-        }
+        function onPlayerExited() { mm.clear(); }
     }
 
-    onTrackChanged: function (title, artists) {
+    function clear() {
         mm.lyrics = [];
         mm.cover = "";
+        mm.lengthUs = 0;
     }
 }
