@@ -34,7 +34,7 @@ Item {
 
     Timer {
         id: updateTimer
-        interval: 250
+        interval: 50
         repeat: true
         running: true
         onTriggered: {

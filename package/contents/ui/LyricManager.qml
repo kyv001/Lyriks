@@ -8,7 +8,7 @@ Item {
     required property TimeLine tl
     property int lastIndex: -1
 
-    signal updateLyrics(string primary, string secondary)
+    signal updateLyrics(list<var> primary, list<var> secondary)
 
     Connections {
         target: lm.mm
@@ -26,7 +26,7 @@ Item {
             const date = new Date();
             let latestLine = {
                 t: -1,
-                text: ""
+                words: []
             };
             let latestLineIndex = -1;
             for (let i = 0; i < lm.mm.lyrics.length; i++) {
@@ -37,10 +37,16 @@ Item {
                 }
             }
             if (latestLineIndex !== -1 && latestLineIndex !== lm.lastIndex) {
-                let primary = latestLine.text;
-                let secondary = lm.mm.lyrics[latestLineIndex + 1]?.text ?? "";
+                let primary = latestLine.words;
+                let secondary = lm.mm.lyrics[latestLineIndex + 1]?.words ?? [];
                 if (latestLine.trans !== "") {
-                    secondary = latestLine.trans;
+                    secondary = [
+                        {
+                            text: latestLine.trans,
+                            t0: 0,
+                            t1: 0
+                        }
+                    ];
                 }
                 lm.updateLyrics(primary, secondary);
                 lm.lastIndex = latestLineIndex;

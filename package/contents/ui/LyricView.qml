@@ -10,7 +10,7 @@ RowLayout {
     Layout.preferredWidth: 20 * Kirigami.Units.gridUnit
     clip: true
 
-    property LyricPair titlePair: null
+    property TitlePair titlePair: null
     property LyricPair currentPair: null
 
     HoverHandler {
@@ -54,16 +54,12 @@ RowLayout {
 
     Component {
         id: lyricPairComponent
-        LyricPair {
-            textType: LyricPair.TextType.Lyric
-        }
+        LyricPair {}
     }
 
     Component {
         id: titlePairComponent
-        LyricPair {
-            textType: LyricPair.TextType.Title
-        }
+        TitlePair {}
     }
 
     PlayerManager {
@@ -81,7 +77,19 @@ RowLayout {
 
         onTrackChanged: function (title: string, artists: list<string>) {
             lv.updateTitlePair(title, artists.join(" / "));
-            lv.updateCurrentPair(title, artists.join(" / "));
+            lv.updateCurrentPair([
+                {
+                    text: title,
+                    t0: 0,
+                    t1: 0
+                }
+            ], [
+                {
+                    text: artists.join(" / "),
+                    t0: 0,
+                    t1: 0
+                }
+            ]);
         }
     }
 
@@ -90,7 +98,7 @@ RowLayout {
         mm: mm
         tl: tl
 
-        onUpdateLyrics: function (primary: string, secondary: string) {
+        onUpdateLyrics: function (primary: list<var>, secondary: list<var>) {
             lv.updateCurrentPair(primary, secondary);
         }
     }
@@ -101,19 +109,18 @@ RowLayout {
         }
         titlePair = titlePairComponent.createObject(lyricPairContainer, {
             primaryText: primary,
-            secondaryText: secondary,
-            tl: tl
+            secondaryText: secondary
         });
         titlePair.hovered = Qt.binding(() => mouse.hovered);
     }
 
-    function updateCurrentPair(primary: string, secondary: string) {
+    function updateCurrentPair(primary: list<var>, secondary: list<var>) {
         if (currentPair) {
             currentPair.end();
         }
         currentPair = lyricPairComponent.createObject(lyricPairContainer, {
-            primaryText: primary,
-            secondaryText: secondary,
+            primaryWords: primary,
+            secondaryWords: secondary,
             tl: tl
         });
         currentPair.hovered = Qt.binding(() => mouse.hovered);

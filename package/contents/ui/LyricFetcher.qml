@@ -34,7 +34,11 @@ Item {
             property string player: ""
             /* {
                 t: double,
-                text: string,
+                words: list<{
+                    text: string,
+                    t0: double,
+                    t1: double,
+                }>,
                 trans: string,
             } */
             property var lyrics: []
@@ -66,14 +70,18 @@ Item {
                                 const respLyrics = JSON.parse(xhr.responseText)["lyric"];
                                 lyrics = [];
                                 for (let i = 0; i < respLyrics.length; i++) {
-                                    let lyricLine = "";
-                                    const words = respLyrics[i]["words"];
-                                    for (let j = 0; j < words.length; j++) { // 暂时不处理逐字歌词，直接拼接
-                                        lyricLine += words[j]["word"];
+                                    let words = [];
+                                    const respWords = respLyrics[i]["words"];
+                                    for (let j = 0; j < respWords.length; j++) {
+                                        words.push({
+                                            text: respWords[j]["word"],
+                                            t0: respWords[j]["startTime"],
+                                            t1: respWords[j]["endTime"]
+                                        });
                                     }
                                     lyrics.push({
                                         t: respLyrics[i]["startTime"] * 1000,
-                                        text: lyricLine,
+                                        words: words,
                                         trans: respLyrics[i]["translatedLyric"]
                                     });
                                 }
