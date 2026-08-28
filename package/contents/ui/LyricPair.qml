@@ -12,7 +12,32 @@ Item {
     required property TimeLine tl
     required property string primaryText
     required property string secondaryText
-    property var easingMode: Easing.InOutSine
+    required property int textType
+    property var easingMode: Easing.InOutQuad
+    property bool hovered: false
+
+    opacity: {
+        if (textType == LyricPair.TextType.Lyric) {
+            if (hovered)
+                return 0;
+            return 1;
+        }
+        if (hovered)
+            return 1;
+        return 0;
+    }
+
+    enum TextType {
+        Title,
+        Lyric
+    }
+
+    Behavior on opacity {
+        NumberAnimation {
+            duration: 250
+            easing: lyricPairRoot.easingMode
+        }
+    }
 
     onEnd: {
         disappearAnimation.running = true;

@@ -6,11 +6,38 @@ RowLayout {
     id: lv
     Layout.minimumWidth: 10 * Kirigami.Units.gridUnit
     Layout.minimumHeight: 2 * Kirigami.Units.gridUnit
+    Layout.preferredHeight: 2 * Kirigami.Units.gridUnit
     Layout.preferredWidth: 20 * Kirigami.Units.gridUnit
     clip: true
 
     property LyricPair titlePair: null
     property LyricPair currentPair: null
+
+    HoverHandler {
+        id: mouse
+    }
+
+    Item {
+        id: playerControl
+        Layout.fillHeight: true
+        Layout.preferredWidth: mouse.hovered ? pc.width : 0
+        clip: true
+
+        Behavior on Layout.preferredWidth {
+            NumberAnimation {
+                duration: 250
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+        PlayerControl {
+            id: pc
+            pm: pm
+            tl: tl
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignRight
+        }
+    }
 
     CoverImage {
         id: ci
@@ -27,7 +54,16 @@ RowLayout {
 
     Component {
         id: lyricPairComponent
-        LyricPair {}
+        LyricPair {
+            textType: LyricPair.TextType.Lyric
+        }
+    }
+
+    Component {
+        id: titlePairComponent
+        LyricPair {
+            textType: LyricPair.TextType.Title
+        }
     }
 
     PlayerManager {
@@ -63,12 +99,12 @@ RowLayout {
         if (titlePair) {
             titlePair.end();
         }
-        titlePair = lyricPairComponent.createObject(lyricPairContainer, {
+        titlePair = titlePairComponent.createObject(lyricPairContainer, {
             primaryText: primary,
             secondaryText: secondary,
             tl: tl
         });
-        titlePair.visible = false;
+        titlePair.hovered = Qt.binding(() => mouse.hovered);
     }
 
     function updateCurrentPair(primary: string, secondary: string) {
@@ -80,5 +116,6 @@ RowLayout {
             secondaryText: secondary,
             tl: tl
         });
+        currentPair.hovered = Qt.binding(() => mouse.hovered);
     }
 }

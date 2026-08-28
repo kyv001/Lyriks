@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := preview
+
 format:
 	qmlformat -i ./package/contents/ui/*.qml
 
@@ -11,4 +13,5 @@ upgrade:
 	kpackagetool6 --type Plasma/Applet --upgrade ./package
 	systemctl --user restart plasma-plasmashell.service
 
-
+preview:
+	plasmoidviewer -a ./package

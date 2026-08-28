@@ -6,16 +6,70 @@ Item {
     visible: false
 
     // 被动事件
-    signal start(double position)
+    signal start(double position) // -1 代表没有时间信息
     signal pause
     signal seek(double seekTimeUs)
     signal metaChanged(var metadata)
     // 主动事件
-    signal doStart // NOT-IMPLEMENTED
-    signal doPause // NOT-IMPLEMENTED
+    signal doStart
+    signal doPause
+    signal doSkipBackward
+    signal doSkipForward
 
     property list<string> players: []
     property string selectedPlayer: ""
+
+    onDoStart: function () {
+        console.log("onDoStart");
+        if (selectedPlayer !== "") {
+            DBus.SessionBus.asyncCall({
+                service: selectedPlayer,
+                path: "/org/mpris/MediaPlayer2",
+                iface: "org.mpris.MediaPlayer2.Player",
+                member: "Play",
+                arguments: []
+            });
+        }
+    }
+
+    onDoPause: function () {
+        console.log("onDoPause");
+        if (selectedPlayer !== "") {
+            DBus.SessionBus.asyncCall({
+                service: selectedPlayer,
+                path: "/org/mpris/MediaPlayer2",
+                iface: "org.mpris.MediaPlayer2.Player",
+                member: "Pause",
+                arguments: []
+            });
+        }
+    }
+
+    onDoSkipBackward: function () {
+        console.log("onDoSkipBackward");
+        if (selectedPlayer !== "") {
+            DBus.SessionBus.asyncCall({
+                service: selectedPlayer,
+                path: "/org/mpris/MediaPlayer2",
+                iface: "org.mpris.MediaPlayer2.Player",
+                member: "Previous",
+                arguments: []
+            });
+        }
+    }
+
+    onDoSkipForward: function () {
+        console.log("onDoSkipForward");
+        if (selectedPlayer !== "") {
+            DBus.SessionBus.asyncCall({
+                service: selectedPlayer,
+                path: "/org/mpris/MediaPlayer2",
+                iface: "org.mpris.MediaPlayer2.Player",
+                member: "Next",
+                arguments: []
+            });
+        }
+    }
 
     Component.onCompleted: {
         DBus.SessionBus.asyncCall({
