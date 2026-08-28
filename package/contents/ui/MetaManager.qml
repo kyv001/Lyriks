@@ -41,6 +41,11 @@ Item {
                 mm.trackChanged(mm.title, mm.artists);
             }
         }
+
+        function onPlayerExited() {
+            mm.lyrics = [];
+            mm.cover = "";
+        }
     }
 
     onTrackChanged: function (title, artists) {

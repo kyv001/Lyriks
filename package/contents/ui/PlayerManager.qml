@@ -10,6 +10,7 @@ Item {
     signal pause
     signal seek(double seekTimeUs)
     signal metaChanged(var metadata)
+    signal playerExited
     // 主动事件
     signal doStart
     signal doPause
@@ -123,6 +124,10 @@ Item {
             }
             if (!pm.players.includes(pm.selectedPlayer)) { // 若当前播放器是空或者已经下线，重新分配一个播放器
                 pm.selectedPlayer = pm.players.length > 0 ? pm.players[0] : "";
+            }
+            if (pm.players.length === 0) {
+                pm.selectedPlayer = "";
+                pm.playerExited();
             }
         }
     }

@@ -64,6 +64,11 @@ RowLayout {
 
     PlayerManager {
         id: pm
+
+        onPlayerExited: function () {
+            lv.updateCurrentPair([], []);
+            lv.updateTitlePair("Lyriks", "暂无播放");
+        }
     }
 
     TimeLine {
