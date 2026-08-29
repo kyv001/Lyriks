@@ -10,6 +10,11 @@ Control {
 
     property string cover: ""
 
+    Kirigami.Icon {
+        anchors.centerIn: parent
+        source: "emblem-music-symbolic"
+    }
+
     Image {
         id: coverImage
         anchors.fill: parent

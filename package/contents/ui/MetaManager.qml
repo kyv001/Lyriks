@@ -36,7 +36,11 @@ Item {
         function onMetaChanged(metadata) {
             if ("xesam:title" in metadata && mm.title !== String(metadata["xesam:title"])) {
                 if ("xesam:artist" in metadata) {
-                    mm.artists = metadata["xesam:artist"];
+                    let artists = metadata["xesam:artist"];
+                    if (artists.length === 1) {
+                        artists = String(artists[0]).split(" / ");
+                    }
+                    mm.artists = artists;
                 }
                 mm.title = String(metadata["xesam:title"]);
                 mm.trackChanged(mm.title, mm.artists);

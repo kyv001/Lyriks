@@ -116,11 +116,40 @@ Item {
                             if (xhr.status === 200) {
                                 const resp = JSON.parse(xhr.responseText);
                                 if (resp && resp.result && resp.result.songs && resp.result.songs.length > 0) {
+                                    let selectedIndex = -1;
+                                    // 按时长最接近排序
                                     if (lengthUs > 0) {
                                         resp.result.songs.sort((a, b) => Math.abs(a.dt * 1000 - lengthUs) - Math.abs(b.dt * 1000 - lengthUs));
                                     }
+                                    // 找第一个作者匹配的曲目
+                                    for (let i = 0; i < resp.result.songs.length; i++) {
+                                        const song = resp.result.songs[i];
+                                        if (song.ar && song.ar.length > 0) {
+                                            let songArtists = []
+                                            for (let j = 0; j < song.ar.length; j++) {
+                                                songArtists.push(song.ar[j].name);
+                                                if (song.ar[j].alias) {
+                                                    for (let k = 0; k < song.ar[j].alias.length; k++) {
+                                                        songArtists.push(song.ar[j].alias[k]);
+                                                    }
+                                                }
+                                            }
+                                            for (let j = 0; j < songArtists.length; j++) {
+                                                if (artists.indexOf(songArtists[j]) !== -1) {
+                                                    selectedIndex = i;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (selectedIndex !== -1) {
+                                            break;
+                                        }
+                                    }
+                                    if (selectedIndex === -1) {
+                                        selectedIndex = 0;
+                                    }
                                     // 2. 获取 ID 后获取逐字歌词
-                                    fetchLyricsById(resp.result.songs[0].id, resp.result.songs[0].dt);
+                                    fetchLyricsById(resp.result.songs[selectedIndex].id, resp.result.songs[selectedIndex].dt);
                                 } else {
                                     requestFinished = true;
                                     givenUp = true;
