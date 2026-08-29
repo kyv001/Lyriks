@@ -17,6 +17,7 @@ Item {
             job.artists = artists;
             job.player = player;
             job.lengthUs = lengthUs;
+            job.running = true;
         }
     }
 
@@ -25,7 +26,6 @@ Item {
 
         Timer {
             interval: 250
-            running: true
             repeat: true
 
             property int retryCount: 0
