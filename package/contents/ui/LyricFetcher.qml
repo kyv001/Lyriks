@@ -88,16 +88,18 @@ Item {
                                             t1: respWords[j]["endTime"]
                                         });
                                     }
+                                    let trans = []
+                                    if (respLyrics[i]["translatedLyric"]) {
+                                        trans.push({
+                                            text: respLyrics[i]["translatedLyric"],
+                                            t0: respLyrics[i]["startTime"],
+                                            t1: respLyrics[i]["endTime"]
+                                        });
+                                    }
                                     lyrics.push({
                                         t: respLyrics[i]["startTime"],
                                         words: words,
-                                        trans: [
-                                            {
-                                                text: respLyrics[i]["translatedLyric"],
-                                                t0: respLyrics[i]["startTime"],
-                                                t1: respLyrics[i]["endTime"]
-                                            }
-                                        ]
+                                        trans: trans
                                     });
                                 }
                             }
