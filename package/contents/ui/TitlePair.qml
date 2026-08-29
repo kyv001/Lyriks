@@ -39,7 +39,6 @@ Item {
         scale: 2 / 3
         transformOrigin: Item.Left
         opacity: 0
-        clip: true
     }
 
     Label {
@@ -54,7 +53,6 @@ Item {
         scale: 2 / 3
         transformOrigin: Item.Left
         opacity: 0
-        clip: true
     }
 
     ParallelAnimation {
