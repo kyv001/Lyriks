@@ -79,7 +79,8 @@ RowLayout {
         pm: pm
 
         onTrackChanged: function (title: string, artists: list<string>) {
-            lv.updateTitlePair(title, artists.join(" / "));
+            let artistsString = artists.length > 0 ? artists.join(" / ") : "未知艺术家";
+            lv.updateTitlePair(title, artistsString);
             lv.updateCurrentPair([
                 {
                     text: title,
@@ -88,7 +89,7 @@ RowLayout {
                 }
             ], [
                 {
-                    text: artists.length > 0 ? artists.join(" / ") : "未知艺术家",
+                    text: artistsString,
                     t0: 0,
                     t1: 0
                 }
