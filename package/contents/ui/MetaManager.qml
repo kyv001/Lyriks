@@ -56,8 +56,8 @@ Item {
                 lf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer, mm.lengthUs);
 
                 if ("mpris:artUrl" in metadata) {
-                    console.log("COVER PROVIDED, SKIPPED FETCHING")
-                    mm.cover = metadata["mpris:artUrl"]
+                    console.log("COVER PROVIDED, SKIPPED FETCHING");
+                    mm.cover = metadata["mpris:artUrl"];
                 } else {
                     cf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer, mm.lengthUs);
                 }
