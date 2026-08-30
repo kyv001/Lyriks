@@ -2,6 +2,7 @@
 
 format:
 	qmlformat -i ./package/contents/ui/*.qml
+	qmlformat -i ./package/contents/scripts/*.js
 
 install:
 	kpackagetool6 --type Plasma/Applet --install ./package

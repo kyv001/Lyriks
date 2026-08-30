@@ -40,9 +40,16 @@ Item {
                     artists = metadata["xesam:artist"];
                 } else if ("xesam:albumArtist" in metadata) {
                     artists = metadata["xesam:albumArtist"];
+                } else if ("xesam:url" in metadata) { // 播放器没有提供艺术家，那就在文件名里提取
+                    let fnameSegments = String(metadata["xesam:url"]).replace(/\.[^\.]+$/, '').split(/\s*-\s*/);
+                    // /path/to/dir/Title - Author.ext --> /path/to/dir/Title - Author --> [/path/to/dir/Title, Author]
+                    //                                                                                          ~~~~~~
+                    if (fnameSegments.length > 1) {
+                        artists = [fnameSegments[fnameSegments.length - 1]];
+                    }
                 }
                 if (artists.length === 1) {
-                    artists = String(artists[0]).split(" / ");
+                    artists = String(artists[0]).split(/\s*[\/,]\s*/);
                 }
                 mm.artists = artists;
                 mm.title = String(metadata["xesam:title"]);

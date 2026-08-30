@@ -1,3 +1,4 @@
+import "../scripts/NCMUtils.js" as NCMUtils
 import QtQuick
 
 Item {
@@ -39,15 +40,15 @@ Item {
             property bool givenUp: false
 
             onTriggered: function () {
+                if (!requestFinished)
+                    // 请求还没结束，等下一个循环
+                    return;
                 if (cover !== "" || retryCount >= 3 || givenUp) {
                     running = false;
                     fetchFinished(cover, title, artists, player);
                     destroy();
                     return;
                 }
-                if (!requestFinished)
-                    // 请求还没结束，等下一个循环
-                    return;
                 requestFinished = false;
                 fetchCover(title, artists, player, lengthUs);
                 retryCount += 1;
@@ -55,7 +56,6 @@ Item {
 
             function fetchCover(title, artists, player, lengthUs) {
                 let xhr = new XMLHttpRequest();
-                xhr.timeout = 1000;
                 xhr.open("GET", `${apiUrl}/cloudsearch?keywords=${encodeURIComponent(title + " " + artists.join(" "))}&limit=30`);
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -63,39 +63,10 @@ Item {
                         if (xhr.status === 200) {
                             const resp = JSON.parse(xhr.responseText);
                             if (resp && resp.result && resp.result.songs && resp.result.songs.length > 0) {
-                                // 按时长最接近排序
-                                if (lengthUs > 0) {
-                                    resp.result.songs.sort((a, b) => Math.abs(a.dt * 1000 - lengthUs) - Math.abs(b.dt * 1000 - lengthUs));
-                                }
-                                // 找第一个作者匹配的曲目
-                                for (let i = 0; i < resp.result.songs.length; i++) {
-                                    const song = resp.result.songs[i];
-                                    if (song.ar && song.ar.length > 0) {
-                                        let songArtists = [];
-                                        for (let j = 0; j < song.ar.length; j++) {
-                                            songArtists.push(song.ar[j].name);
-                                            if (song.ar[j].alias) {
-                                                for (let k = 0; k < song.ar[j].alias.length; k++) {
-                                                    songArtists.push(song.ar[j].alias[k]);
-                                                }
-                                            }
-                                        }
-                                        for (let j = 0; j < songArtists.length; j++) {
-                                            if (artists.indexOf(songArtists[j]) !== -1) {
-                                                cover = song.al?.picUrl ?? "";
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    if (cover) {
-                                        break;
-                                    }
-                                }
+                                let selectedIndex = NCMUtils.matchNCMusic(resp, artists, lengthUs);
+                                cover = resp.result.songs[selectedIndex].al?.picUrl ?? "";
                                 if (!cover) {
-                                    cover = resp.result.songs[0]?.al?.picUrl ?? "";
-                                    if (!cover) {
-                                        givenUp = true;
-                                    }
+                                    givenUp = true;
                                 }
                             }
                         }
