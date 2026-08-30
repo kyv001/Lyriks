@@ -35,13 +35,16 @@ Item {
         target: mm.pm
         function onMetaChanged(metadata) {
             if ("xesam:title" in metadata && mm.title !== String(metadata["xesam:title"])) {
+                let artists = ["未知艺术家"];
                 if ("xesam:artist" in metadata) {
-                    let artists = metadata["xesam:artist"];
-                    if (artists.length === 1) {
-                        artists = String(artists[0]).split(" / ");
-                    }
-                    mm.artists = artists;
+                    artists = metadata["xesam:artist"];
+                } else if ("xesam:albumArtist" in metadata) {
+                    artists = metadata["xesam:albumArtist"];
                 }
+                if (artists.length === 1) {
+                    artists = String(artists[0]).split(" / ");
+                }
+                mm.artists = artists;
                 mm.title = String(metadata["xesam:title"]);
                 mm.trackChanged(mm.title, mm.artists);
                 mm.clear();
@@ -51,7 +54,13 @@ Item {
                     mm.lengthUs = 0;
                 }
                 lf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer, mm.lengthUs);
-                cf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer, mm.lengthUs);
+
+                if ("mpris:artUrl" in metadata) {
+                    console.log("COVER PROVIDED, SKIPPED FETCHING")
+                    mm.cover = metadata["mpris:artUrl"]
+                } else {
+                    cf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer, mm.lengthUs);
+                }
             }
         }
 
