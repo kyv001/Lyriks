@@ -71,7 +71,7 @@ Item {
                                 for (let i = 0; i < resp.result.songs.length; i++) {
                                     const song = resp.result.songs[i];
                                     if (song.ar && song.ar.length > 0) {
-                                        let songArtists = []
+                                        let songArtists = [];
                                         for (let j = 0; j < song.ar.length; j++) {
                                             songArtists.push(song.ar[j].name);
                                             if (song.ar[j].alias) {
