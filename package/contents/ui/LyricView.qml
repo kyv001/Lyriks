@@ -66,7 +66,19 @@ RowLayout {
         id: pm
 
         onPlayerExited: function () {
-            lv.updateCurrentPair([], []);
+            lv.updateCurrentPair([
+                {
+                    text: "Lyriks",
+                    t0: 0,
+                    t1: 0
+                }
+            ], [
+                {
+                    text: "暂无播放",
+                    t0: 0,
+                    t1: 0
+                }
+            ]);
             lv.updateTitlePair("Lyriks", "暂无播放");
         }
     }
