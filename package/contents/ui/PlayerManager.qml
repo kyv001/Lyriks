@@ -21,7 +21,6 @@ Item {
     property string selectedPlayer: ""
 
     onDoStart: function () {
-        console.log("onDoStart");
         if (selectedPlayer !== "") {
             DBus.SessionBus.asyncCall({
                 service: selectedPlayer,
@@ -34,7 +33,6 @@ Item {
     }
 
     onDoPause: function () {
-        console.log("onDoPause");
         if (selectedPlayer !== "") {
             DBus.SessionBus.asyncCall({
                 service: selectedPlayer,
@@ -47,7 +45,6 @@ Item {
     }
 
     onDoSkipBackward: function () {
-        console.log("onDoSkipBackward");
         if (selectedPlayer !== "") {
             DBus.SessionBus.asyncCall({
                 service: selectedPlayer,
@@ -60,7 +57,6 @@ Item {
     }
 
     onDoSkipForward: function () {
-        console.log("onDoSkipForward");
         if (selectedPlayer !== "") {
             DBus.SessionBus.asyncCall({
                 service: selectedPlayer,

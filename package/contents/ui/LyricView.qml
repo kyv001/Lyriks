@@ -79,7 +79,6 @@ RowLayout {
         pm: pm
 
         onTrackChanged: function (title: string, artists: list<string>) {
-            console.log(title, artists.join(" / "));
             lv.updateTitlePair(title, artists.join(" / "));
             lv.updateCurrentPair([
                 {
