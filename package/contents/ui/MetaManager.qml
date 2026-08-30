@@ -35,7 +35,7 @@ Item {
         target: mm.pm
         function onMetaChanged(metadata) {
             if ("xesam:title" in metadata && mm.title !== String(metadata["xesam:title"])) {
-                let artists = ["未知艺术家"];
+                let artists = [];
                 if ("xesam:artist" in metadata) {
                     artists = metadata["xesam:artist"];
                 } else if ("xesam:albumArtist" in metadata) {

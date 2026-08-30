@@ -89,7 +89,7 @@ RowLayout {
                 }
             ], [
                 {
-                    text: artists.join(" / "),
+                    text: artists.length > 0 ? artists.join(" / ") : "未知艺术家",
                     t0: 0,
                     t1: 0
                 }
