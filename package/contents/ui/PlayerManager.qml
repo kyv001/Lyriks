@@ -117,6 +117,7 @@ Item {
             name = String(name);
             oldOwner = String(oldOwner);
             newOwner = String(newOwner);
+            let playerCountBefore = pm.players.length;
             if (newOwner === "") { // 播放器下线
                 pm.players = pm.players.filter(player => player !== name);
             } else if (oldOwner === "" && name.startsWith("org.mpris.MediaPlayer2.") && !pm.players.includes(name)) { // 播放器上线
@@ -125,7 +126,7 @@ Item {
             if (!pm.players.includes(pm.selectedPlayer)) { // 若当前播放器是空或者已经下线，重新分配一个播放器
                 pm.selectedPlayer = pm.players.length > 0 ? pm.players[0] : "";
             }
-            if (pm.players.length === 0) {
+            if (pm.players.length === 0 && playerCountBefore > 0) {
                 pm.selectedPlayer = "";
                 pm.playerExited();
             }

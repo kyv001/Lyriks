@@ -12,6 +12,7 @@ RowLayout {
 
     property TitlePair titlePair: null
     property LyricPair currentPair: null
+    property bool idle: false
 
     HoverHandler {
         id: mouse
@@ -65,22 +66,7 @@ RowLayout {
     PlayerManager {
         id: pm
 
-        onPlayerExited: function () {
-            lv.updateCurrentPair([
-                {
-                    text: "Lyriks",
-                    t0: 0,
-                    t1: 0
-                }
-            ], [
-                {
-                    text: "暂无播放",
-                    t0: 0,
-                    t1: 0
-                }
-            ]);
-            lv.updateTitlePair("Lyriks", "暂无播放");
-        }
+        onPlayerExited: lv.clear()
     }
 
     TimeLine {
@@ -120,7 +106,30 @@ RowLayout {
         }
     }
 
-    function updateTitlePair(primary: string, secondary: string) {
+    Component.onCompleted: clear()
+
+    function clear() {
+        if (idle)
+            return;
+        lv.updateCurrentPair([
+            {
+                text: "Lyriks",
+                t0: 0,
+                t1: 0
+            }
+        ], [
+            {
+                text: "暂无播放",
+                t0: 0,
+                t1: 0
+            }
+        ]);
+        lv.updateTitlePair("Lyriks", "暂无播放");
+        idle = true;
+    }
+
+    function updateTitlePair(primary, secondary) {
+        idle = false;
         if (titlePair) {
             titlePair.end();
         }
@@ -131,7 +140,8 @@ RowLayout {
         titlePair.hovered = Qt.binding(() => mouse.hovered);
     }
 
-    function updateCurrentPair(primary: list<var>, secondary: list<var>) {
+    function updateCurrentPair(primary, secondary) {
+        idle = false;
         if (currentPair) {
             currentPair.end();
         }
