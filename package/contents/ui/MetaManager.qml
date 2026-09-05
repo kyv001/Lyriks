@@ -63,10 +63,12 @@ Item {
                 lf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer, mm.lengthUs);
 
                 if ("mpris:artUrl" in metadata) {
-                    mm.cover = metadata["mpris:artUrl"];
+                    mm.cover = String(metadata["mpris:artUrl"]);
                 } else {
                     cf.startFetch(mm.title, mm.artists, mm.pm.selectedPlayer, mm.lengthUs);
                 }
+            } else if ("mpris:artUrl" in metadata && mm.cover !== String(metadata["mpris:artUrl"])) { // 一些播放器（如SPlayer）会稍后再发送封面图
+                mm.cover = String(metadata["mpris:artUrl"]);
             }
         }
 
