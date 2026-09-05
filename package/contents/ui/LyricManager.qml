@@ -8,7 +8,7 @@ Item {
     required property TimeLine tl
     property int lastIndex: -1
 
-    signal updateLyrics(list<var> primary, list<var> secondary)
+    signal updateLyrics(list<var> primary, list<var> secondary, bool isTranslated)
 
     Connections {
         target: lm.mm
@@ -37,12 +37,14 @@ Item {
                 }
             }
             if (latestLineIndex !== -1 && latestLineIndex !== lm.lastIndex) {
+                let isTranslated = false;
                 let primary = latestLine.words;
                 let secondary = lm.mm.lyrics[latestLineIndex + 1]?.words ?? [];
                 if (latestLine.trans && latestLine.trans.length > 0) {
                     secondary = latestLine.trans;
+                    isTranslated = true;
                 }
-                lm.updateLyrics(primary, secondary);
+                lm.updateLyrics(primary, secondary, isTranslated);
                 lm.lastIndex = latestLineIndex;
             }
         }

@@ -102,8 +102,8 @@ RowLayout {
         mm: mm
         tl: tl
 
-        onUpdateLyrics: function (primary: list<var>, secondary: list<var>) {
-            lv.updateCurrentPair(primary, secondary);
+        onUpdateLyrics: function (primary: list<var>, secondary: list<var>, isTranslated: bool) {
+            lv.updateCurrentPair(primary, secondary, isTranslated);
         }
     }
 
@@ -141,7 +141,7 @@ RowLayout {
         titlePair.hovered = Qt.binding(() => mouse.hovered);
     }
 
-    function updateCurrentPair(primary, secondary) {
+    function updateCurrentPair(primary, secondary, isTranslated = false) {
         idle = false;
         if (currentPair) {
             currentPair.end();
@@ -149,7 +149,9 @@ RowLayout {
         currentPair = lyricPairComponent.createObject(lyricPairContainer, {
             primaryWords: primary,
             secondaryWords: secondary,
-            tl: tl
+            tl: tl,
+            isTranslated: isTranslated,
+            isPreviewed: currentPair !== null && !currentPair.isTranslated
         });
         currentPair.hovered = Qt.binding(() => mouse.hovered);
     }

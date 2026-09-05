@@ -14,6 +14,8 @@ Item {
     required property list<var> secondaryWords
     property var easingMode: Easing.InOutQuad
     property bool hovered: false
+    property bool isTranslated: false
+    property bool isPreviewed: false
 
     opacity: !hovered
 
@@ -33,7 +35,7 @@ Item {
 
         y: parent.height * 0.5
         height: parent.height * 0.5
-        scale: 2 / 3
+        scale: lp.isPreviewed ? 2 / 3 : 1
         transformOrigin: Item.Left
 
         tl: lp.tl
@@ -129,7 +131,7 @@ Item {
             PropertyAnimation {
                 target: secondary
                 property: "scale"
-                to: 1
+                to: lp.isTranslated ? 2 / 3 : 1 // 只有真正的下一句才能被下一歌词对覆盖
                 duration: 250
                 easing: lp.easingMode
             }
