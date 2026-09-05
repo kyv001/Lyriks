@@ -25,7 +25,8 @@ Item {
     CoverFetcher {
         id: cf
         onFetchFinished: function (cover, title, artists, player) {
-            if (mm.artists.toString() === artists.toString() && mm.title === title) {
+            if (mm.artists.toString() === artists.toString() && mm.title === title && mm.cover === "") {
+                //                                       防止覆盖播放器提供的专辑封面 ^~~~~~~~~~~~~~~
                 mm.cover = cover;
             }
         }
